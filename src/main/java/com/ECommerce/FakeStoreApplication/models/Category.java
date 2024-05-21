@@ -10,9 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity(name = "category")
 public class Category extends BaseModel{
     private String categoryName;
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Product> productList;
 }
