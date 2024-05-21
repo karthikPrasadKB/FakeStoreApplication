@@ -3,6 +3,7 @@ package com.ECommerce.FakeStoreApplication.services;
 import com.ECommerce.FakeStoreApplication.dtos.FakeStoreProductDto;
 import com.ECommerce.FakeStoreApplication.dtos.ProductRequestDto;
 import com.ECommerce.FakeStoreApplication.dtos.ProductResponseDto;
+import com.ECommerce.FakeStoreApplication.exceptions.ProductNotFoundException;
 import com.ECommerce.FakeStoreApplication.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +35,14 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ProductResponseDto getProductById(Long id) {
+    public ProductResponseDto getProductById(Long id) throws ProductNotFoundException {
         RestTemplate restTemplate = this.restTemplateBuilder.build();
         ResponseEntity<FakeStoreProductDto> response = restTemplate.getForEntity(getProductsURL + "/{id}",
                                                                                  FakeStoreProductDto.class, id);
         FakeStoreProductDto fakeStoreProductDto = response.getBody();
+        if(fakeStoreProductDto == null){
+            throw new ProductNotFoundException("Product not found");
+        }
         return this.getProductDtoFromFakeStoreProductDto(fakeStoreProductDto);
     }
 
