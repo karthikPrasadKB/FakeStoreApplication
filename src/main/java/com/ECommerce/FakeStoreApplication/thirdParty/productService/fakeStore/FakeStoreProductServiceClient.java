@@ -74,6 +74,7 @@ public class FakeStoreProductServiceClient implements ThirdPartyProductServiceCl
         return this.getProductDtoFromFakeStoreProductDto(response.getBody());
     }
 
+
     @Override
     public boolean deleteProduct(Long id) {
         return true;

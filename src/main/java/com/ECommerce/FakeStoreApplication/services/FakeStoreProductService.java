@@ -43,6 +43,7 @@ public class FakeStoreProductService implements ProductService{
         return this.thirdPartyProductServiceClient.getProductById(id);
     }
 
+
     @Override
     public List<ProductResponseDto> getAllProducts() {
         System.out.println("service : getAllProducts");
