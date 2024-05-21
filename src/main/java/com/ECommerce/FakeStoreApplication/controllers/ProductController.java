@@ -20,12 +20,12 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<Product> getAllProducts(){
-        return List.of();
+    public List<ProductResponseDto> getAllProducts(){
+        return this.productService.getAllProducts();
     }
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable("id") Long id){
+    public ProductResponseDto getProductById(@PathVariable("id") Long id){
         return this.productService.getProductById(id);
     }
 

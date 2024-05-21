@@ -8,9 +8,9 @@ import com.ECommerce.FakeStoreApplication.models.Product;
 import java.util.List;
 
 public interface ProductService {
-    Product getProductById(Long id);
-    List<Product> getAllProducts();
-    Product createProduct(ProductResponseDto productResponseDto);
-    Product deleteProduct(Long id);
-    Product updateProduct(Long id, ProductRequestDto productRequestDto);
+    ProductResponseDto getProductById(Long id);
+    List<ProductResponseDto> getAllProducts();
+    ProductResponseDto createProduct(ProductResponseDto productResponseDto);
+    ProductResponseDto deleteProduct(Long id);
+    ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto);
 }

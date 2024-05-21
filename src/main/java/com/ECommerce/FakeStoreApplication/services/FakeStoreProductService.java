@@ -3,13 +3,13 @@ package com.ECommerce.FakeStoreApplication.services;
 import com.ECommerce.FakeStoreApplication.dtos.FakeStoreProductDto;
 import com.ECommerce.FakeStoreApplication.dtos.ProductRequestDto;
 import com.ECommerce.FakeStoreApplication.dtos.ProductResponseDto;
-import com.ECommerce.FakeStoreApplication.models.Category;
 import com.ECommerce.FakeStoreApplication.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("fakeStoreProductService")
@@ -22,23 +22,7 @@ public class FakeStoreProductService implements ProductService{
         this.restTemplateBuilder = restTemplateBuilder;
     }
 
-    private Product getProductFromProductResponseDto(ProductResponseDto productResponseDto){
-        Product product = new Product();
-        product.setDescription(productResponseDto.getDescription());
-        product.setId(productResponseDto.getId());
-        product.setPrice(productResponseDto.getPrice());
-        product.setName(productResponseDto.getTitle());
-        product.setImageLink(productResponseDto.getImage());
-        product.setCategory(new Category());
-        product.getCategory().setCategoryName(productResponseDto.getCategory());
-        return product;
-    }
-
-    @Override
-    public Product getProductById(Long id) {
-        RestTemplate restTemplate = this.restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto> response = restTemplate.getForEntity(getProductsURL + "/{id}", FakeStoreProductDto.class, id);
-        FakeStoreProductDto fakeStoreProductDto = response.getBody();
+    private ProductResponseDto getProductDtoFromFakeStoreProductDto(FakeStoreProductDto fakeStoreProductDto){
         ProductResponseDto productResponseDto = new ProductResponseDto();
         productResponseDto.setId(fakeStoreProductDto.getId());
         productResponseDto.setTitle(fakeStoreProductDto.getTitle());
@@ -46,26 +30,42 @@ public class FakeStoreProductService implements ProductService{
         productResponseDto.setImage(fakeStoreProductDto.getImage());
         productResponseDto.setCategory(fakeStoreProductDto.getCategory());
         productResponseDto.setDescription(fakeStoreProductDto.getDescription());
-        return this.getProductFromProductResponseDto(productResponseDto);
+        return productResponseDto;
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return List.of();
+    public ProductResponseDto getProductById(Long id) {
+        RestTemplate restTemplate = this.restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductDto> response = restTemplate.getForEntity(getProductsURL + "/{id}",
+                                                                                 FakeStoreProductDto.class, id);
+        FakeStoreProductDto fakeStoreProductDto = response.getBody();
+        return this.getProductDtoFromFakeStoreProductDto(fakeStoreProductDto);
     }
 
     @Override
-    public Product createProduct(ProductResponseDto productResponseDto) {
+    public List<ProductResponseDto> getAllProducts() {
+        RestTemplate restTemplate = this.restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductDto[]> response = restTemplate.getForEntity(this.getProductsURL,
+                                                                                  FakeStoreProductDto[].class);
+        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+        for(FakeStoreProductDto fakeStoreProductDto : response.getBody()){
+            productResponseDtoList.add(this.getProductDtoFromFakeStoreProductDto(fakeStoreProductDto));
+        }
+        return productResponseDtoList;
+    }
+
+    @Override
+    public ProductResponseDto createProduct(ProductResponseDto productResponseDto) {
         return null;
     }
 
     @Override
-    public Product deleteProduct(Long id) {
+    public ProductResponseDto deleteProduct(Long id) {
         return null;
     }
 
     @Override
-    public Product updateProduct(Long id, ProductRequestDto productRequestDto) {
+    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
         return null;
     }
 }
