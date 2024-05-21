@@ -1,16 +1,15 @@
 package com.ECommerce.FakeStoreApplication.dtos;
 
-import com.ECommerce.FakeStoreApplication.models.Product;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductResponseDto {
-    private long id;
+public class FakeStoreProductDto {
+    private Long id;
     private String title;
-    private String category;
     private float price;
     private String description;
+    private String category;
     private String image;
 }
