@@ -5,11 +5,14 @@ import com.ECommerce.FakeStoreApplication.dtos.ProductResponseDto;
 import com.ECommerce.FakeStoreApplication.exceptions.ProductNotFoundException;
 import com.ECommerce.FakeStoreApplication.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
 
     private ProductService productService;
@@ -19,28 +22,29 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public List<ProductResponseDto> getAllProducts(){
         return this.productService.getAllProducts();
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("{id}")
     public ProductResponseDto getProductById(@PathVariable("id") Long id) throws ProductNotFoundException{
         return this.productService.getProductById(id);
     }
 
-    @PostMapping("/products")
+    @PostMapping
     public ProductResponseDto addProduct(@RequestBody ProductRequestDto productRequestDto){
-        return null;
+        return this.productService.createProduct(productRequestDto);
     }
 
-    @PatchMapping("/products/{id}")
-    public ProductResponseDto updateProduct(@PathVariable("id") Long id,
-                                            @RequestBody ProductRequestDto productRequestDto){
-        return null;
+    @PutMapping("{id}")
+    public HttpStatus updateProduct(@PathVariable("id") Long id, @RequestBody ProductRequestDto productRequestDto)
+            throws ProductNotFoundException{
+        this.productService.updateProduct(id, productRequestDto);
+        return HttpStatus.ACCEPTED;
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("{id}")
     public boolean deleteProductById(@PathVariable("id") Long id){
         return false;
     }

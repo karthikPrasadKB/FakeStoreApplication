@@ -9,7 +9,7 @@ import java.util.List;
 public interface ThirdPartyProductServiceClient {
     ProductResponseDto getProductById(Long id) throws ProductNotFoundException;
     List<ProductResponseDto> getAllProducts();
-    ProductResponseDto createProduct(ProductResponseDto productResponseDto);
+    ProductResponseDto createProduct(ProductRequestDto productRequestDto);
     boolean deleteProduct(Long id);
-    ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto);
+    void updateProduct(Long id, ProductRequestDto productRequestDto) throws ProductNotFoundException;
 }

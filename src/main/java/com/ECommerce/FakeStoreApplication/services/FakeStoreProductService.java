@@ -8,6 +8,7 @@ import com.ECommerce.FakeStoreApplication.thirdParty.productService.ThirdPartyPr
 import com.ECommerce.FakeStoreApplication.thirdParty.productService.fakeStore.FakeStoreProductServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,8 +50,8 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ProductResponseDto createProduct(ProductResponseDto productResponseDto) {
-        return this.thirdPartyProductServiceClient.createProduct(productResponseDto);
+    public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+        return this.thirdPartyProductServiceClient.createProduct(productRequestDto);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
-        return null;
+    public void updateProduct(Long id, ProductRequestDto productRequestDto) throws ProductNotFoundException {
+        this.thirdPartyProductServiceClient.updateProduct(id, productRequestDto);
     }
 }

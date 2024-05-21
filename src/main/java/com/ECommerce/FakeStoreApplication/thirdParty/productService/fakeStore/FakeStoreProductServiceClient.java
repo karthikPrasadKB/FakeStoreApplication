@@ -46,9 +46,8 @@ public class FakeStoreProductServiceClient implements ThirdPartyProductServiceCl
 
     @Override
     public ProductResponseDto getProductById(Long id) throws ProductNotFoundException {
-        System.out.println(this.productBaseUrl);
         ResponseEntity<FakeStoreProductDto> response = this.restTemplate.getForEntity(this.productSpecificUrl,
-                FakeStoreProductDto.class, id);
+                                                                                      FakeStoreProductDto.class, id);
         FakeStoreProductDto fakeStoreProductDto = response.getBody();
         if(fakeStoreProductDto == null){
             throw new ProductNotFoundException("Product not found");
@@ -58,9 +57,8 @@ public class FakeStoreProductServiceClient implements ThirdPartyProductServiceCl
 
     @Override
     public List<ProductResponseDto> getAllProducts() {
-        System.out.println(this.productBaseUrl);
         ResponseEntity<FakeStoreProductDto[]> response = this.restTemplate.getForEntity(this.productBaseUrl,
-                FakeStoreProductDto[].class);
+                                                                                        FakeStoreProductDto[].class);
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
         for(FakeStoreProductDto fakeStoreProductDto : response.getBody()){
             productResponseDtoList.add(this.getProductDtoFromFakeStoreProductDto(fakeStoreProductDto));
@@ -69,8 +67,11 @@ public class FakeStoreProductServiceClient implements ThirdPartyProductServiceCl
     }
 
     @Override
-    public ProductResponseDto createProduct(ProductResponseDto productResponseDto) {
-        return null;
+    public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+        ResponseEntity<FakeStoreProductDto> response = this.restTemplate.postForEntity(this.productBaseUrl,
+                                                                                       productRequestDto,
+                                                                                       FakeStoreProductDto.class);
+        return this.getProductDtoFromFakeStoreProductDto(response.getBody());
     }
 
     @Override
@@ -79,7 +80,8 @@ public class FakeStoreProductServiceClient implements ThirdPartyProductServiceCl
     }
 
     @Override
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
-        return null;
+    public void updateProduct(Long id, ProductRequestDto productRequestDto) throws ProductNotFoundException {
+        ProductResponseDto responseDto = this.getProductById(id);
+        this.restTemplate.put(this.productSpecificUrl, productRequestDto, id, FakeStoreProductDto.class);
     }
 }
