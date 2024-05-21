@@ -6,6 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+//Generic Product Response DTO
 public class ProductResponseDto {
     private long id;
     private String title;

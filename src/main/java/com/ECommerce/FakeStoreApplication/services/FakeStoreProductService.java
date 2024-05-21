@@ -4,13 +4,12 @@ import com.ECommerce.FakeStoreApplication.dtos.FakeStoreProductDto;
 import com.ECommerce.FakeStoreApplication.dtos.ProductRequestDto;
 import com.ECommerce.FakeStoreApplication.dtos.ProductResponseDto;
 import com.ECommerce.FakeStoreApplication.exceptions.ProductNotFoundException;
-import com.ECommerce.FakeStoreApplication.models.Product;
+import com.ECommerce.FakeStoreApplication.thirdParty.productService.ThirdPartyProductServiceClient;
+import com.ECommerce.FakeStoreApplication.thirdParty.productService.fakeStore.FakeStoreProductServiceClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("fakeStoreProductService")
@@ -18,8 +17,12 @@ public class FakeStoreProductService implements ProductService{
 
     private final String getProductsURL = "https://fakestoreapi.com/products";
     private RestTemplateBuilder restTemplateBuilder;
+    private ThirdPartyProductServiceClient thirdPartyProductServiceClient;
 
-    public FakeStoreProductService(RestTemplateBuilder restTemplateBuilder){
+    @Autowired
+    public FakeStoreProductService(FakeStoreProductServiceClient fakeStoreProductServiceClient,
+                                   RestTemplateBuilder restTemplateBuilder){
+        this.thirdPartyProductServiceClient = fakeStoreProductServiceClient;
         this.restTemplateBuilder = restTemplateBuilder;
     }
 
@@ -36,36 +39,23 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public ProductResponseDto getProductById(Long id) throws ProductNotFoundException {
-        RestTemplate restTemplate = this.restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto> response = restTemplate.getForEntity(getProductsURL + "/{id}",
-                                                                                 FakeStoreProductDto.class, id);
-        FakeStoreProductDto fakeStoreProductDto = response.getBody();
-        if(fakeStoreProductDto == null){
-            throw new ProductNotFoundException("Product not found");
-        }
-        return this.getProductDtoFromFakeStoreProductDto(fakeStoreProductDto);
+        return this.thirdPartyProductServiceClient.getProductById(id);
     }
 
     @Override
     public List<ProductResponseDto> getAllProducts() {
-        RestTemplate restTemplate = this.restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto[]> response = restTemplate.getForEntity(this.getProductsURL,
-                                                                                  FakeStoreProductDto[].class);
-        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
-        for(FakeStoreProductDto fakeStoreProductDto : response.getBody()){
-            productResponseDtoList.add(this.getProductDtoFromFakeStoreProductDto(fakeStoreProductDto));
-        }
-        return productResponseDtoList;
+        System.out.println("service : getAllProducts");
+        return this.thirdPartyProductServiceClient.getAllProducts();
     }
 
     @Override
     public ProductResponseDto createProduct(ProductResponseDto productResponseDto) {
-        return null;
+        return this.thirdPartyProductServiceClient.createProduct(productResponseDto);
     }
 
     @Override
-    public ProductResponseDto deleteProduct(Long id) {
-        return null;
+    public boolean deleteProduct(Long id) {
+        return this.thirdPartyProductServiceClient.deleteProduct(id);
     }
 
     @Override
